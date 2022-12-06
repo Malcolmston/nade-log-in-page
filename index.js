@@ -19,7 +19,7 @@ var express = require("express"),
 var bodyParser = require('body-parser')
 
 const session = require('express-session');
-
+const fs = require('fs')
 const login = '/accountPage.html'
 const chat = '/homePage.html'
 
@@ -95,15 +95,17 @@ app.post('/login', function(request, response) {
 app.get('/home', function(request, response) {
 	// If the user is loggedin
 	if (request.session.loggedin) {
+		//next file
+		response.sendFile( path.resolve(__dirname+chat) );
+
 		// Output username
-		response.send('Welcome back, ' + request.session.ussername + '!');
+		//response.send('Welcome back, ' + request.session.ussername + '!');
 	} else {
 		// Not logged in
 		response.send('Please login to view this page!');
 		
 	}
 	response.end();
-	//response.sendFile( path.resolve(__dirname+chat) );
 })
 
 
