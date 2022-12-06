@@ -1,4 +1,8 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://kit.fontawesome.com/fd76b8450f.js" crossorigin="anonymous"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
 <div class='bar'>
@@ -6,13 +10,20 @@
 			<i class="fa-solid fa-house" ></i>
 			<a>Log out</a>
 		</form>
+</div>
 
 	<script>
-
-
 var home = document.getElementById('home')
 
 home.addEventListener('click',function(params) {
 		home.submit()
 	})
 	</script>
+
+
+	<script>
+	const socket = io();
+
+
+		socket.emit('data','hi');
+</script>

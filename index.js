@@ -9,21 +9,25 @@ const {
 	getChats
 } = require('./sql.js');
 
+var express = require("express")
+var app = express()
 
-
-var http = require('http');
+var http = require('http').Server(app);
 var path = require('path');
-var express = require("express"),
-	app = express(),
-	server = require("http").Server(app);
+
+//var server = require("http").Server(http);
 var bodyParser = require('body-parser')
 const router = express.Router();
 
+const io = require('socket.io')(http);
+
 const session = require('express-session');
-const fs = require('fs')
+
 
 const login = '/accountPage.html'
 const chat = '/homePage.html'
+const port = process.env.PORT || 3000
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -38,7 +42,7 @@ app.use(session({
 
 app.get('/', function(req, res) {
 	//get login file
-	res.sendFile(path.resolve(__dirname + login));
+	res.sendFile(path.resolve(__dirname + chat));
 });
 
 
@@ -119,9 +123,16 @@ app.get('/home', function(request, response) {
 	//response.end();
 })
 
-
-
 app.use('/', router);
 
 
-server.listen(process.env.PORT || 3030);
+
+io.on('connection', function(socket) {
+   socket.on('data', function(message ) {
+			console.log( message )
+		});
+})
+
+http.listen(port, () => {
+    console.log(`Socket.IO server running at http://localhost:${port}/`);
+});
