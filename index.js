@@ -1,13 +1,27 @@
 const {
+	crateTable,
 	addNewuser,
 	getNewlogIn,
 	validate,
 	isEmpty,
 	getAll,
+
 	createChat,
 	addNewChat,
-	getChats
-} = require('./sql.js');
+	getChats,
+
+	createRooms,
+	addNewuserRoom,
+	GetRoom
+} = require("./sql.js")
+
+const {
+	newUser,
+	getActiveUser,
+	getIndividualRoomUsers,
+	getAllusers
+} = require("./place.js")
+
 
 var express = require("express")
 var app = express()
@@ -29,6 +43,7 @@ const chat = '/homePage.html'
 const port = process.env.PORT || 3000
 
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'static')));
@@ -42,7 +57,7 @@ app.use(session({
 
 app.get('/', function(req, res) {
 	//get login file
-	res.sendFile(path.resolve(__dirname + chat));
+	res.sendFile(path.resolve(__dirname + login));
 });
 
 
@@ -85,6 +100,8 @@ app.post('/login', function(request, response) {
 				request.session.loggedin = true;
 				request.session.ussername = ussername;
 
+				request.session.you = request.body
+
 				response.redirect('/home')
 				response.end();
 			} else {
@@ -107,11 +124,53 @@ app.post('/logout', function(request, response) {
 })
 
 app.get('/home', function(request, response) {
+
 	// If the user is loggedin
 	if (request.session.loggedin) {
 		//next file
+
 		//response.sendFile(path.resolve(__dirname + login));
 		response.sendFile(path.join(__dirname + chat));
+
+
+		io.on('connection', socket => {
+			socket.emit('joinRoom', { username: request.session.ussername, room: 'hi' })
+
+			socket.on('joinRoom', ({ username, room }) => {
+				let user = newUser(socket.id, username, room);
+
+
+
+				socket.join(user.room);
+
+				// General welcome
+				socket.emit('message', 'Messages are limited to this room!');
+
+
+
+				socket.on('chatMessage', msg => {
+					let user = getActiveUser(socket.id);
+
+					console.log(user)
+					io.to(user.room).emit('message', msg);
+				});
+
+				socket.emit('allUsers', getAllusers())
+
+
+				// Current active users and room name
+				io.to(user.room).emit('roomUsers', {
+					room: user.room,
+					users: getIndividualRoomUsers(user.room)
+				});
+			});
+
+
+		})
+
+
+
+
 
 		// Output username
 		//response.send('Welcome back, ' + request.session.ussername + '!');
@@ -127,12 +186,8 @@ app.use('/', router);
 
 
 
-io.on('connection', function(socket) {
-   socket.on('data', function(message ) {
-			console.log( message )
-		});
-})
 
 http.listen(port, () => {
-    console.log(`Socket.IO server running at http://localhost:${port}/`);
+	console.log(`Socket.IO server running at http://localhost:${port}/`);
 });
+

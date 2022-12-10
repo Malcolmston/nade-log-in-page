@@ -4,42 +4,48 @@ var db = new sqlite3.Database('uses.sqlite');
 var Promise = require('promise');
 const fetch = require('node-fetch');
 
+
 Date.prototype.toFormat = function(){
     let r = this.toISOString().split('T')[0].replace(/-/g,'/').split('/') 
     return r[2] +'/'+r[1]+'/'+r[0] +' '+ (this.getHours() > 12 ? 'pm '+(this.getHours()-12) : 'am '+this.getHours())   +':'+ this.getMinutes();  
   
 }
 
-function bettweenSeconds(x,y){
-//2628000 is the amount of seconds in a month
-return (Math.abs(x.getTime() - y.getTime())/1000) >= 2628000;
-}
+function generatePass(pLength){
+	       charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+	       retVal = "";
+	   for (var i = 0, n = charset.length; i < pLength; ++i) {
+	       retVal += charset.charAt(Math.floor(Math.random() * n));
+	   }
+	   return retVal;
 
-// gets all users in the user database
-function getAll() {
-  return new Promise((resolve, reject) => {
-    db.all("SELECT * FROM users",
+	}
+
+function getAll(From = 'users') {
+  return new Promise( (resolve, reject) => {
+    db.all(`SELECT * FROM ${From}`,
       [], (err, rows) => {
         if (err) {
-          //reject(err)
-          crateTable().then(function() {
-            return getAll()
-          })
+			console.log( err )
+          reject(err)
+          
         } else {
           resolve(rows)
         }
       });
   })
-}
-//crate table users 
-function crateTable(name = 'users') {
+}	
+
+ function crateTable(name = 'users') {
   return new Promise((resolve, reject) => {
     db.serialize(function() {
-      db.run("CREATE TABLE IF NOT EXISTS  " + name + "  (person_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, password TEXT NOT NULL)");
+      db.run(`CREATE TABLE IF NOT EXISTS ${name} (person_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, password TEXT NOT NULL)`);
       resolve('done')
     })
   })
-}
+ }
+
+
 //adds a new user with the headers
 function addNewuser(username, password) {
   return new Promise((resolve, reject) => {
@@ -91,7 +97,7 @@ function getNewlogIn(username, password) {
 async function isEmpty() {
   var a;
   try {
-    a = await getAll()
+    a = await getAll('users')
     return (a.length >= 1)
   } catch (error) {
     a = 'error'
@@ -102,11 +108,13 @@ async function isEmpty() {
 }
 //is the log in valid?
 async function validate(username, password) {
-  var ans = await getAll()
+  var ans = await getAll('users')
   //console.log( username, password )
   try {
     return ans.filter(function(x) {
-      return x['username'] == username && x['password'] == password
+		//(a | b) == 1 
+		
+      return x['username'] == username || x['password'] == password
     }).length >= 1
   } catch (error) {
     crateTable().then(function() {
@@ -114,6 +122,9 @@ async function validate(username, password) {
     })
   }
 }
+
+
+
 // this function adds chat to the chat server
 function createChat(name = 'chat') {
   return new Promise((resolve, reject) => {
@@ -164,12 +175,58 @@ function getChats(code) {
   });
 }
 //db
-exports.addNewuser = addNewuser;
-exports.getNewlogIn = getNewlogIn;
-exports.validate = validate;
-exports.isEmpty = isEmpty;
-exports.getAll = getAll;
-//chat
-exports.createChat = createChat;
-exports.addNewChat = addNewChat;
-exports.getChats = getChats;
+
+
+function createRooms() {
+	 return new Promise((resolve, reject) => {
+    db.serialize(function() {
+      db.run("CREATE TABLE IF NOT EXISTS chatRoom (person_id INTEGER PRIMARY KEY AUTOINCREMENT, _From1 TEXT NOT NULL, _To1 TEXT NOT NULL, _From2 TEXT NOT NULL, _To2 TEXT NOT NULL, _Room_key TEXT NOT NULL)");
+      resolve(true)
+    })
+  })
+}
+
+function addNewuserRoom(To, From,code=generatePass(50)) {
+  return new Promise((resolve, reject) => {
+    db.serialize(function() {
+      db.run("CREATE TABLE IF NOT EXISTS chatRoom (person_id INTEGER PRIMARY KEY AUTOINCREMENT, _From1 TEXT NOT NULL, _To1 TEXT NOT NULL, _From2 TEXT NOT NULL, _To2 TEXT NOT NULL, _Room_key TEXT NOT NULL)");
+      var stmt = db.prepare("INSERT INTO chatRoom VALUES (?,?,?,?,?,?)");
+      stmt.run(null, To, From, From, To, code );
+      stmt.finalize();
+    resolve(true)
+    })
+  });
+}
+
+function GetRoom(to, from) {
+	 return new Promise( (resolve, reject) => {
+    db.all(`SELECT _Room_key FROM chatRoom WHERE (_From1 == '${from}' OR _From2 == '${from}') And (_To1 == '${to}' OR _To2 == '${to}')`,
+      [], (err, rows) => {
+        if (err) {
+			console.log( err )
+          reject(err)
+          
+        } else {
+          resolve(rows)
+        }
+      });
+  })
+}
+
+
+module.exports = {
+	crateTable,
+	addNewuser,
+	getNewlogIn,
+	validate,
+isEmpty,
+getAll,
+
+createChat,
+addNewChat,
+getChats,
+
+createRooms,
+addNewuserRoom,
+GetRoom
+}
