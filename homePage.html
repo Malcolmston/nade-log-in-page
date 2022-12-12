@@ -1,285 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>My Website</title>
-
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
-<style>
-			  :focus {
-  outline: none;
-  box-shadow: none!important;
-}
-
-.overlay {
-  height: 100%;
-  width: 100%;
-  display: none;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0, 0.9);
-}
-
-.overlay-content {
-  position: relative;
-  top: 25%;
-  width: 100%;
-  text-align: center;
-  margin-top: 30px;
-}
-
-.overlay a {
-  padding: 8px;
-  text-decoration: none;
-  font-size: 36px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-
-.overlay a:hover, .overlay a:focus {
-  color: #f1f1f1;
-}
-
-ul {
-  list-style-type: none;
-  
-  width: 200px;
-  height: 550px;
-  background-color: lightgray;
-  
- }
- 
-li {
-    font: 1rem 'Fira Sans', sans-serif;
-}
-
-.messageBar {
-    width: 240px;
-    height: 24px;
-    border: solid black 1px;
-    border-radius: 40px;
-}
-
-table, td, th {
-  border: 0px solid;
-}
-
-table {
-  width: 400px;
-  border-collapse: collapse;
-}
-
-
-
-@media only screen and (max-height: 540px) {
-  ul {
-    height: 450px;
-  }
-}
-
-@media only screen and (max-height: 440px) {
-  ul {
-    height: 350px;
-  }
-}
-
-@media only screen and (max-height: 340px) {
-  ul {
-    height: 250px;
-  }
-}
-
-@media only screen and (max-height: 240px) {
-.overlay {
-  display: block;
- 
-}
-
-
-}
-
-.flex-container {
-display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 20px;
-    
-}
-</style>
-	  
-  </head>
-  <body>
-    <main>
-        
-<div id="myNav" class="overlay">
-<div class="overlay-content">
-    <a href="#">Page is too small</a>
-   
-  </div>
-</div>
-
-
-
-        <h1>Welcome to My Website</h1>  
-
-		<div class='bar'>
-		<form id='home' action='/logout' method="post">
-			<i class="fa-solid fa-house" ></i>
-			<a>Log out</a>
-		</form>
-</div>
-
-<div class="flex-container">
-
-  <div class="inputs">
-  <ul class='chat'>
-</ul>
-
-<input class="messageBar"></input>
-  </div>
-  
-   <div class="table">
-   	<table>
-
-</table>
-  </div>
-  
-</div>
-
-
-
-
-    </main>
-	  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://kit.fontawesome.com/fd76b8450f.js" crossorigin="anonymous"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js'></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-	<script>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>My Website</title>
+		<link rel="icon" href="./favicon.ico" type="image/x-icon">
+		<style>
+			:focus {
+			outline: none;
+			box-shadow: none!important;
+			}
+			.overlay {
+			height: 100%;
+			width: 100%;
+			display: none;
+			position: fixed;
+			z-index: 1;
+			top: 0;
+			left: 0;
+			background-color: rgb(0,0,0);
+			background-color: rgba(0,0,0, 0.9);
+			}
+			.overlay-content {
+			position: relative;
+			top: 25%;
+			width: 100%;
+			text-align: center;
+			margin-top: 30px;
+			}
+			.overlay a {
+			padding: 8px;
+			text-decoration: none;
+			font-size: 36px;
+			color: #818181;
+			display: block;
+			transition: 0.3s;
+			}
+			.overlay a:hover, .overlay a:focus {
+			color: #f1f1f1;
+			}
+			ul {
+			list-style-type: none;
+			width: 200px;
+			height: 550px;
+			background-color: lightgray;
+			}
+			li {
+			font: 1rem 'Fira Sans', sans-serif;
+			}
+			.messageBar {
+			width: 240px;
+			height: 24px;
+			border: solid black 1px;
+			border-radius: 40px;
+			}
+			table, td, th {
+			border: 0px solid;
+			}
+			table {
+			width: 400px;
+			border-collapse: collapse;
+			}
+			@media only screen and (max-height: 540px) {
+			ul {
+			height: 450px;
+			}
+			}
+			@media only screen and (max-height: 440px) {
+			ul {
+			height: 350px;
+			}
+			}
+			@media only screen and (max-height: 340px) {
+			ul {
+			height: 250px;
+			}
+			}
+			@media only screen and (max-height: 240px) {
+			.overlay {
+			display: block;
+			}
+			}
+			.flex-container {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-gap: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<div id="myNav" class="overlay">
+				<div class="overlay-content">
+					<a href="#">Page is too small</a>
+				</div>
+			</div>
+			<h1>Welcome to My Website</h1>
+			<div class='bar'>
+				<form id='home' action='/logout' method="post">
+					<i class="fa-solid fa-house" ></i>
+					<a>Log out</a>
+				</form>
+			</div>
+			<div class="flex-container">
+				<div class="inputs">
+					<ul class='chat'></ul>
+					<input class="messageBar"></input>
+				</div>
+				<div class="table">
+					<table>
+					</table>
+				</div>
+			</div>
+		</main>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script src="https://kit.fontawesome.com/fd76b8450f.js" crossorigin="anonymous"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js'></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script>
 			function add_row(room){
-var tr = document.createElement('tr')
+			var tr = document.createElement('tr')
+			
+			tr.id = room
+			
+			tda = document.createElement('td')
+			tda.innerHTML = `<a>${room}</a>`
+			tr.append(tda)
+			
+			tdb = document.createElement('td')
+			let btna = document.createElement('button')
+			btna.innerHTML = 'open'
+			btna.className = 'open'
+			btna.addEventListener('click',function(){
+			 roomThing(room)
+			})
+			tdb.append(btna)
+			tr.append(tdb)
+			
+			
+			tdc = document.createElement('td')
+			let btnb = document.createElement('button')
+			btnb.innerHTML = 'delet'
+			btnb.className = 'delet'
+			btnb.addEventListener('click',function(){
+			 delet_roomThing(room)
+			})
+			tdc.append(btnb)
+			tr.append(tdc)
 
-tr.id = room
+			document.querySelector('table').append(tr)
+			}
+			
+			function roomThing(room) {
+			
+			}
 
-tda = document.createElement('td')
-tda.innerHTML = `<a>${room}</a>`
-tr.append(tda)
-
-tdb = document.createElement('td')
-let btna = document.createElement('button')
-btna.innerHTML = 'open'
-btna.className = 'open'
-btna.addEventListener('click',function(){
-    roomThing(room)
-})
-tdb.append(btna)
-tr.append(tdb)
-
-
-tdc = document.createElement('td')
-let btnb = document.createElement('button')
-btnb.innerHTML = 'delet'
-btnb.className = 'delet'
-btnb.addEventListener('click',function(){
-    delet_roomThing(room)
-})
-tdc.append(btnb)
-tr.append(tdc)
-
-
-
-
-
- document.querySelector('table').append(tr)
-}
-		
-					const socket = io();
-
-		
-socket.on('joinRoom', ({ username, room }) => {
-	socket.emit('joinRoom',{username, room})
-})
-
-		socket.on('allUsers', data => {
-
-[...new Set(data.map( x => x.username ))].map(add_row)		
-
-	socket.off('allUsers')
-})
-
-socket.on('roomUsers', data => {
-	//console.log( data )
-
-//let d = data.users.map( x => x.username ).map(add_row)
-		
-
-	socket.off('roomUsers')
-})
-		
-var home = document.getElementById('home')
-
-home.addEventListener('click',function(params) {
-		home.submit()
-	})
-
-
-
-		function roomThing(room) {
-	
-		}
-
-	
-
-		function message(m) {
-		  				  let li = document.createElement('li')
-
-		      let txt = document.createTextNode( m )
-
-   li.append( txt )
-    chats.append( li )
-    
-    input.value = ""
-
+			function message(m) {
+			 				  let li = document.createElement('li')
+			
+			     let txt = document.createTextNode( m )
+			
+			li.append( txt )
+			 chats.append( li )
+			 
+			 input.value = ""
+			
 			return;
-		}
+			}
+			
+					const socket = io();			
 
-		  socket.on('message', m => {
+			
+			socket.on('joinRoom', ({ username, room }) => {
+				socket.emit('joinRoom',{username, room})
+				socket.emit('getallUsers')
+			})
+
+			setInterval(function(params) {
+				socket.emit('getallUsers')
+			},100)
+			
+			socket.on('allUsers', data => {
+			[...new Set(data.map( x => x.username ))].map(add_row)		
+			
+			socket.off('allUsers')
+			})
+			
+			socket.on('roomUsers', data => {
+			//console.log( data )
+			
+			//let d = data.users.map( x => x.username ).map(add_row)
+			
+			
+			socket.off('roomUsers')
+			})
+			
+			var home = document.getElementById('home')
+			
+			home.addEventListener('click',function(params) {
+			home.submit()
+			})
+			
+			
+			
+			 socket.on('message', m => {
 			  socket.off('message')
 			  message(m)
-			 // 
-		  });
-		// Get the input field
-var input = document.querySelector(".messageBar");
-var chats = document.querySelector(".chat")
+			 });
+			// Get the input field
+			var input = document.querySelector(".messageBar");
+			var chats = document.querySelector(".chat")
+			
+			// Execute a function when the user presses a key on the keyboard
+			input.addEventListener("keypress", function(event) {
+			// If the user presses the "Enter" key on the keyboard
+			if (event.key === "Enter") {
+			 // Cancel the default action, if needed
+			 event.preventDefault();
+			
+			 socket.emit('chatMessage', input.value );
+			
+			 socket.on('message', (m) => {
+				 socket.emit('getallUsers')
+			message(m);
+			 })
+			}
+			});
 
-// Execute a function when the user presses a key on the keyboard
-input.addEventListener("keypress", function(event) {
-  // If the user presses the "Enter" key on the keyboard
-  if (event.key === "Enter") {
-    // Cancel the default action, if needed
-    event.preventDefault();
-	  
-    socket.emit('chatMessage', input.value );
-	  
-		  socket.on('message', (m) => {
-   message(m);
-		  })
-  }
-});
-
-		
-	
-		
-		
-	</script>
-	  
-  </body>
+		</script>
+	</body>
 </html>
-
-

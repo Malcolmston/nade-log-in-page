@@ -44,9 +44,10 @@ const port = process.env.PORT || 3000
 
 
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
 	secret: 'secret',
@@ -133,13 +134,15 @@ app.get('/home', function(request, response) {
 		response.sendFile(path.join(__dirname + chat));
 
 
+/*
 		io.on('connection', socket => {
+			socket.emit('allUsers', getAllusers())
+
 			socket.emit('joinRoom', { username: request.session.ussername, room: 'hi' })
+			//socket.emit('logedin', request.session.ussername)
 
 			socket.on('joinRoom', ({ username, room }) => {
 				let user = newUser(socket.id, username, room);
-
-
 
 				socket.join(user.room);
 
@@ -155,8 +158,8 @@ app.get('/home', function(request, response) {
 					io.to(user.room).emit('message', msg);
 				});
 
-				socket.emit('allUsers', getAllusers())
-
+				
+socket.emit('allUsers', getAllusers())
 
 				// Current active users and room name
 				io.to(user.room).emit('roomUsers', {
@@ -165,9 +168,14 @@ app.get('/home', function(request, response) {
 				});
 			});
 
+			socket.on('getallUsers',() => {
+				socket.emit('allUsers', getAllusers())
+			})
+
+			
 
 		})
-
+*/
 
 
 
